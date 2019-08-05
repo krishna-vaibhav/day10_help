@@ -1,0 +1,117 @@
+What is ModelAndView -- A class which represents holder of logical view name + model (model attributes)
+API --o.s.w.s.ModelAndView
+
+Constructor
+ModelAndView(String viewName,String modelAttrName,Object modelAttrValue)
+
+viewName -- Logical view name 
+What is a model attribute ?
+--A key & value pair (entry) created typically by controller, which holds B.L results.
+ ModelAttribute/s is sent from Controller ---> F.C
+F.C saves it in current request scope & pushes it(sends it) to the view layer. (so that view layer can get the results & send it in HTTP response to the client)
+
+
+
+1. Understand concept of Model
+
+Concept of Model --o.s.ui.Model (i/f)  = map of model attributes
+
+Type of Map
+ (Map<String,Object>)
+
+API of Model
+public Model addAttribute(String modelAttrName,Object val)
+
+who creates empty model  map -- SC
+
+How do u(Controller)  access it --can be passed as one of the params of request handling methods. (Dependency)
+
+who populates it -- SC / Controller(prog)
+why ? -- to share the results available in controller layer with View.
+Model attr map is sent from controller --> F.C Front Controller  (Dispatcher Servlet) 
+F.C adds it in request scope & pushes it(sends it) to JSP (view layer)
+So this is called push MVC architecture.
+
+
+How to add model attr in Model map?
+public Model addAttribute(String nm,Object value);
+
+How to get Model map ? 
+Using D.I -- just tell SC that your req handling method needs a model map(how ? -- by adding it in the method arg) & SC will create Model map & inject it in your code.
+
+
+
+4. Handling request params (w/o using form binding) -- of different types(int,string,date,multiple selected chkboxes)
+Annotation to use : org.springframework.web.bind.annotation.RequestParam 
+
+@DateTimeFormat & JSTL supplied formatting(fmt) library
+
+5. Handling path variables (extremely important for RESTful web services) via
+@PathVariable 
+
+eg :
+URI  http://www.example.com/users/rama 
+Above contains the variable userId. Assigning the value "rama" to the variable yields http://www.example.com/users/rama
+ eg : URI  http://www.example.com/spring_mvc/users/rama 
+In Spring MVC you can use the @PathVariable annotation on a method argument to bind it to the value of a URI template variable:
+@GetMapping(value="/users/{userId}")
+public String findUser(@PathVariable(name="userId") String userId123, Model model) {
+User user = userService.findUser(userId);
+model.addAttribute("user_details", user);
+return "display_user";
+}
+The URI Template "/users/{userId}" specifies the variable name userId. When the controller handles this request, the value of userId is set to the value found in the appropriate part of the URI.
+
+More on these annotations
+1. @RequestParam and @PathVariable annotations are used for accessing the values from the request. 
+2. The key difference between @RequestParam and @PathVariable is that @RequestParam used for accessing the values of the query parameters where as @PathVariable used for accessing the values from the URI template.
+3.The @PathVariable annotation has only one attribute value for binding the request URI template. It is allowed to use the multiple @PathVariable annotation in the single method. But, ensure that no more than one method has the same pattern.
+
+4. While developing RESTful Web Services, it will be useful to use @PathVaribale for forming the more flexible URI .
+
+-------------
+5. @ResponseBody
+Appears on ret type of request handling method.
+Meaning -- Order to the D.S (SC) to SKIP VIEW LAYER.
+SC will auto use the converters(java->json,java->text,java->xml depending upon the need) & send the resp to client directly.
+
+
+
+
+6. How SC creates a populated Model Map ? (eg : With customer pojo)
+Add a parameter to req handling method (Customer)
+
+6. Create layer spring web application for Customer management.
+Controller -- @Controller , @RequestMapping
+@AutoWired
+private CustomerService service;
+
+Service -- B.L  --i/f --- validate,register,list
+Imple class ---@Service
+
+POJO -- Customer
+
+
+Layers -- Controller --- Service (B.L+Tx management @Transactional) --POJO
+Objective --List Customers (copy customer POJO & sample service code,copy forms)
+Validate Customer 
+Flow -- index.jsp -- login form  --Controller --HM based validation ---err --login form with err mesg , success (add cust details in HS)  --details page --logout.
+ 
+
+Register Customer --- redirect to login page with a mesg.
+Flow -- index.jsp -- reg  form  --Controller -- HM based registration --- err (duplicate email) -- login form with err mesg -- success (add cust details in HS)  --details page --logout.
+
+More on RedirectAttributes
+org.springframework.web.servlet.mvc.support.RedirectAttributes
+--map of flash scope attributes
+Use case --- redirect scenario
+To remember the attrs in the next request.
+API
+public RedirectAttributes addFlashAttributes(String nm,Object val)
+
+
+
+
+
+
+

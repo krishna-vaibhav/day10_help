@@ -1,0 +1,14 @@
+MVC (Model-View-Controller) is a commonly used pattern in implementing J2EE web applications. The main principle of the MVC pattern is to define an architecture with clear responsibilities for different components. As its name implies, there are three participants within the MVC pattern:
+
+1. Model: A model represents the business data as well as the state of the application within the context of the user. 
+For example, in an e-commerce web
+site, the model will include the user profile information, shopping cart data or bank account information,
+order data if users purchase goods on the site.(currently implemented by Java Bean )
+
+2. View: This presents the data to the user in the desired format, supports interaction with users, and supports client-side validation, i18n, styles, and so on.
+(implemented by JSP)
+
+3. Controller: The controller handles requests for actions performed by users in the
+frontend, interacting with the service layer, updating the model, and directing
+users to the appropriate view based on the result of execution.
+(implemented by Servlet / Servlet Filter)
